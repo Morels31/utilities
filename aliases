@@ -1,3 +1,4 @@
+
 alias cl="clear"
 alias copy="rsync -rh --info=progress2"
 alias nv="nvim"

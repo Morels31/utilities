@@ -1,0 +1,131 @@
+alias cl="clear"
+alias copy="rsync -rh --info=progress2"
+alias nv="nvim"
+alias py="python3"
+alias lg="la | grep -i"
+alias x="exit"
+alias xx="exit"
+alias sudo="sudo " 
+alias cb="cd -"
+alias ".."="cd .."
+alias "..."="cd ../.."
+alias "...."="cd ../../.."
+alias "....."="cd ../../../.."
+alias untar="tar -xvf"
+alias inst="sudo apt install"
+alias ssu="sudo su"
+alias svi="sudo vi"
+alias ipt="sudo iptables -nvL --line-numbers"
+alias ip6t="sudo ip6tables -nvL --line-numbers"
+alias mounted="cat /etc/mtab | grep -v /dev/loop | grep /dev/"
+alias p="sudo pacman"
+alias g="grep"
+alias k="kubectl"
+alias cdreal="cd \"\$(realpath .)\""
+
+
+
+
+alias ip="ip -c"
+alias ls="ls --color=auto"
+alias ll="ls -alF"
+alias la="ls -A"
+alias l="ls -CF"
+
+
+alias ks="ls"
+alias os="ls"
+alias òs="ls"
+alias s="ls"
+alias lc="clear"
+alias LS="echo Please remove CAPS LOCK"
+
+
+
+
+function cs(){
+	cd "$@" && ls --color=auto
+}
+
+
+function c(){ 
+	gcc "$1" -pthread && (./a.out "${@:2}"; rm a.out)
+}
+
+
+function gc(){
+	gcc "./$1" -o $(echo "$1" | cut -f 1 -d '.') -pthread
+}
+
+
+function pwdf(){
+	echo "$(pwd)/$@"
+}
+
+function f(){
+	find . -iname "*$@*"
+}
+
+function sz(){
+	if [ -z "$1" ]
+		then
+			du -sh * | sort -h
+		else
+			du -sh "${1%%+(/)}"/* | sort -h
+	fi
+}
+
+function cup(){
+	startD="$(pwd)"
+	if [ $# -gt 0 ]; then
+		for d in "$@"; do 
+			printf " - - - Starting %s - - -\n" "$(basename $d)" 
+			cd "$d" && \
+			{ docker compose up -d; \
+			cd "$startD" > /dev/null; }
+		done
+	else
+		docker compose up -d
+	fi
+}
+
+function cdw(){
+	startD="$(pwd)"
+	if [ $# -gt 0 ]; then
+		for d in "$@"; do 
+			printf " - - - Stopping %s - - -\n" "$(basename $d)" 
+			cd "$d" && \
+			{ docker compose down; \
+			cd "$startD" > /dev/null; }
+		done
+	else
+		docker compose down
+	fi
+}
+
+function crb(){
+	startD="$(pwd)"
+	if [ $# -gt 0 ]; then
+		for d in "$@"; do
+			printf " - - - Restarting %s - - -\n" "$(basename $d)" 
+			cd "$d" && \
+			{ docker compose down && \
+			docker compose up -d; \
+			cd "$startD" > /dev/null; }
+		done
+	else
+		docker compose down && docker compose up -d
+	fi
+}
+
+function cconsole(){
+	docker exec -it "$1" sh -c "bash || sh"
+}
+
+function sssh(){
+	for i in {1..60}; do
+		ssh $1 -o ConnectTimeout=1
+		if [ $? -ne 255 ]; then break; fi
+		sleep 1
+	done
+}
